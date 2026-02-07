@@ -10,9 +10,6 @@
 
 import sys
 import random
-import nltk
-from nltk.translate.bleu_score import corpus_bleu
-nltk.download('punkt')
 
 class progressBar:
     def __init__(self ,barWidth = 50):
@@ -37,6 +34,20 @@ def readCorpus(fileName):
     ### fileName е името на файла, съдържащ корпуса
     ### връща списък от изречения, като всяко изречение е списък от думи
     print('Loading file:',fileName)
+    # Мързелив импорт на nltk и осигуряване на нужните ресурси
+    try:
+        import nltk
+        try:
+            nltk.data.find('tokenizers/punkt')
+        except LookupError:
+            try:
+                nltk.download('punkt', quiet=True)
+                nltk.download('punkt_tab', quiet=True)
+            except Exception:
+                pass
+    except ImportError as e:
+        raise ImportError("NLTK не е инсталиран. Моля, инсталирайте го с 'pip install nltk'.") from e
+
     return [ nltk.word_tokenize(line) for line in open(fileName) ]
 
 def getDictionary(corpus, startToken, endToken, unkToken, padToken, transToken, wordCountThreshold = 2):
