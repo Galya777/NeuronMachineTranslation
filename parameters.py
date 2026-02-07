@@ -9,13 +9,13 @@ corpusFileName = 'corpusData'
 wordsFileName = 'wordsData'
 modelFileName = 'NMTmodel'
 
-device = torch.device("cuda:0")
-#device = torch.device("cpu")
+# Използвай GPU ако е наличен
+device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 
-parameter1 = 1
-parameter2 = 2
-parameter3 = 3
-parameter4 = 4
+# Хиперпараметри на модела
+emb_dim = 256
+hidden_dim = 512
+num_layers = 1
 
 learning_rate = 0.001
 batchSize = 32

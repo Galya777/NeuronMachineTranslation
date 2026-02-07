@@ -60,7 +60,16 @@ if len(sys.argv)>1 and (sys.argv[1] == 'train' or sys.argv[1] == 'extratrain'):
     (trainCorpus,devCorpus) = pickle.load(open(corpusFileName, 'rb'))
     word2ind = pickle.load(open(wordsFileName, 'rb'))
 
-    nmt = model.LanguageModel(parameter1, parameter2, parameter3, parameter4).to(device)
+    nmt = model.LanguageModel(
+        vocab_size=len(word2ind),
+        emb_dim=emb_dim,
+        hidden_dim=hidden_dim,
+        num_layers=num_layers,
+        start_idx=startTokenIdx,
+        end_idx=endTokenIdx,
+        pad_idx=padTokenIdx,
+        trans_idx=transTokenIdx
+    ).to(device)
     optimizer = torch.optim.Adam(nmt.parameters(), lr=learning_rate)
 
     if sys.argv[1] == 'extratrain':
@@ -81,9 +90,9 @@ if len(sys.argv)>1 and (sys.argv[1] == 'train' or sys.argv[1] == 'extratrain'):
         words = 0
         trainTime = time.time()
         for b in range(0, len(idx), batchSize):
-			#############################################################################
-			### Може да се наложи да се променя скоростта на спускане learning_rate в зависимост от итерацията
-			#############################################################################
+            #############################################################################
+            ### Може да се наложи да се променя скоростта на спускане learning_rate в зависимост от итерацията
+            #############################################################################
             iter += 1
             batch = [ trainCorpus[i] for i in idx[b:min(b+batchSize, len(idx))] ]
             
@@ -124,7 +133,16 @@ if len(sys.argv)>1 and (sys.argv[1] == 'train' or sys.argv[1] == 'extratrain'):
 if len(sys.argv)>3 and sys.argv[1] == 'perplexity':
     word2ind = pickle.load(open(wordsFileName, 'rb'))
     
-    nmt = model.LanguageModel(parameter1, parameter2, parameter3, parameter4).to(device)
+    nmt = model.LanguageModel(
+        vocab_size=len(word2ind),
+        emb_dim=emb_dim,
+        hidden_dim=hidden_dim,
+        num_layers=num_layers,
+        start_idx=startTokenIdx,
+        end_idx=endTokenIdx,
+        pad_idx=padTokenIdx,
+        trans_idx=transTokenIdx
+    ).to(device)
     nmt.load(modelFileName)
     
     sourceTest = utils.readCorpus(sys.argv[2])
@@ -143,7 +161,16 @@ if len(sys.argv)>3 and sys.argv[1] == 'translate':
     test = [ [startToken] + s + [transToken] for s in sourceTest ]
     test = [ [word2ind.get(w,unkTokenIdx) for w in s] for s in test ]
 
-    nmt = model.LanguageModel(parameter1, parameter2, parameter3, parameter4).to(device)
+    nmt = model.LanguageModel(
+        vocab_size=len(word2ind),
+        emb_dim=emb_dim,
+        hidden_dim=hidden_dim,
+        num_layers=num_layers,
+        start_idx=startTokenIdx,
+        end_idx=endTokenIdx,
+        pad_idx=padTokenIdx,
+        trans_idx=transTokenIdx
+    ).to(device)
     nmt.load(modelFileName)
 
     nmt.eval()
@@ -165,7 +192,16 @@ if len(sys.argv)>2 and sys.argv[1] == 'generate':
     test = sys.argv[2].split()
     test = [word2ind.get(w,unkTokenIdx) for w in test]
 
-    nmt = model.LanguageModel(parameter1, parameter2, parameter3, parameter4).to(device)
+    nmt = model.LanguageModel(
+        vocab_size=len(word2ind),
+        emb_dim=emb_dim,
+        hidden_dim=hidden_dim,
+        num_layers=num_layers,
+        start_idx=startTokenIdx,
+        end_idx=endTokenIdx,
+        pad_idx=padTokenIdx,
+        trans_idx=transTokenIdx
+    ).to(device)
     nmt.load(modelFileName)
 
     nmt.eval()
