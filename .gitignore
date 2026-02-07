@@ -1,0 +1,42 @@
+# Byte-compiled / cache
+__pycache__/
+*.py[cod]
+*.pyo
+
+# Virtual environments
+.venv/
+venv/
+env/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# IDE
+.idea/
+.vscode/
+
+# Data and large artifacts
+en_bg_data/
+corpusData
+wordsData
+
+# Model checkpoints / binaries
+NMTmodel
+NMTmodel.optim
+*.pt
+*.pth
+*.bin
+*.ckpt
+
+# Numpy / pickle artifacts
+*.npz
+*.npy
+*.pkl
+*.pickle
+
+# Logs
+*.log
+
+# Documents (large)
+proj.pdf
