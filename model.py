@@ -65,8 +65,8 @@ class LanguageModel(nn.Module):
         log_probs = F.log_softmax(logits, dim=-1)
 
         # Съберем log_prob на истинските таргети
-        tgt_flat = tgt.view(-1)  # (B*(T-1))
-        lp_flat = log_probs.view(-1, self.vocab_size)  # (B*(T-1), V)
+        tgt_flat = tgt.reshape(-1)
+        lp_flat = log_probs.reshape(-1, self.vocab_size)        # (B*(T-1), V)
         token_lp = lp_flat[torch.arange(tgt_flat.numel(), device=lp_flat.device), tgt_flat]  # (B*(T-1))
         token_lp = token_lp.view(B, T - 1)
 
