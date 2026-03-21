@@ -17,7 +17,10 @@ class progressBar:
         self.period = None
     def start(self, count):
         self.item=0
-        self.period = int(count / self.barWidth)
+        if count >= self.barWidth:
+            self.period = int(count / self.barWidth)
+        else:
+            self.period = 1
         sys.stdout.write("["+(" " * self.barWidth)+"]")
         sys.stdout.flush()
         sys.stdout.write("\b" * (self.barWidth+1))
