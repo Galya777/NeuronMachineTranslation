@@ -189,5 +189,8 @@ if len(sys.argv) > 1 and sys.argv[1] == 'submit':
     pb.stop()
 
     submission_df = pd.DataFrame(results)
+    # Ensure index=False is strictly used
     submission_df.to_csv('submission.csv', index=False)
     print("Submission file saved as submission.csv")
+    # Display preview without index
+    print(submission_df.head().to_string(index=False))
