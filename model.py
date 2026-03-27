@@ -76,34 +76,29 @@ class LanguageModel(nn.Module):
         return H
 
     @torch.no_grad()
-    def generate(self, prefix, limit=200):
+    def generate(self, prefix, limit=1000):
         """
         prefix: списък от индекси. Връща цялата последователност (prefix + генерирано).
         """
         device = next(self.parameters()).device
         seq = list(prefix)
-        # Подготвяме начално състояние чрез пускане на целия prefix през RNN
-        # за да получим коректния скрит вектор (state) за последната дума от префикса
+        # Подготвяме начално състояние чрез пускане на prefix през RNN
         x = torch.tensor([seq], dtype=torch.long, device=device)  # (1, T)
         emb = self.emb(x)
-        output, state = self.rnn(emb) # output: (1, T, H), state: (num_layers, 1, H)
-        
-        # Предсказваме следващата дума след префикса, използвайки последното h от output
-        last_h = output[:, -1:, :] # (1, 1, H)
-        logits = self.proj(last_h) # (1, 1, V)
-        cur = torch.argmax(logits.view(-1)).item()
-        seq.append(cur)
-        
-        steps = 1
+        h, state = self.rnn(emb)
+
+        cur = seq[-1] if len(seq) > 0 else self.startTokenIdx
+        steps = 0
         while steps < limit and cur != self.endTokenIdx:
-            # подай току-що генерираната дума като вход
+            # последното изходно скрито състояние -> проекция към логити
+            logits = self.proj(h[:, -1:, :])  # (1,1,V)
+            next_token = torch.argmax(logits.squeeze(0).squeeze(0), dim=-1).item()
+            seq.append(next_token)
+            cur = next_token
+            # подай следващия като вход
             x_next = torch.tensor([[cur]], dtype=torch.long, device=device)
             emb_next = self.emb(x_next)
-            output, state = self.rnn(emb_next, state)
-            
-            logits = self.proj(output) # (1, 1, V)
-            cur = torch.argmax(logits.view(-1)).item()
-            seq.append(cur)
+            h, state = self.rnn(emb_next, state)
             steps += 1
             if cur == self.endTokenIdx:
                 break
