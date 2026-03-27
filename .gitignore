@@ -20,6 +20,14 @@ Thumbs.db
 en_bg_data/
 corpusData
 wordsData
+akkadian_data/
+akkadian_corpusData
+akkadian_wordsData
+AkkadianNMTmodel
+AkkadianNMTmodel.optim
+Akkadian to English/
+*.zip
+submission.csv
 
 # Model checkpoints / binaries
 NMTmodel
